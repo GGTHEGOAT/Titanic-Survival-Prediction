@@ -4,7 +4,7 @@ import pickle
 app = Flask(__name__)
 
 # Load trained model
-with open("Titanic Prediction.pkl", "rb") as f:
+with open("Titanic_Prediction.pkl", "rb") as f:   # make sure file name matches
     model = pickle.load(f)
 
 @app.route("/")
@@ -44,7 +44,10 @@ def predict():
         prediction = model.predict([features])[0]
 
         # Probability of survival
-        proba = model.predict_proba([features])[0][1] * 100
+        if hasattr(model, "predict_proba"):
+            proba = model.predict_proba([features])[0][1] * 100
+        else:
+            proba = 0
 
         if prediction == 1:
             result = f"✅ Survived (Chance: {proba:.2f}%)"
